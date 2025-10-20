@@ -1,23 +1,25 @@
-# Python 3.13 taban imajı
 FROM python:3.13-slim
 
-# Çalışma dizinini ayarla
 WORKDIR /app
 
-# Önce yalnızca requirements.txt'yi kopyala, önbellek için
+# Install minimal dependencies + OpenCV libs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential curl git libgl1 libglib2.0-0 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for caching
 COPY requirements.txt .
 
-# Önce Torch CPU'yu yükle
-RUN pip install --no-cache-dir torch==2.9.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
+# Install PyTorch CPU + other Python dependencies
+RUN pip install --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir -r requirements.txt
 
-# Sonra geri kalan paketleri yükle
-RUN pip install --no-cache-dir -r requirements.txt
+# Remove build tools to reduce image size
+RUN apt-get purge -y build-essential git && apt-get autoremove -y
 
-# Proje dosyalarını kopyala
+# Copy project files
 COPY . .
 
-# FastAPI varsayılan portunu aç
 EXPOSE 8000
 
-# FastAPI uygulamasını uvicorn ile çalıştır
-CMD ["uvicorn", "backend.api:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python3", "-m", "uvicorn", "backend.api:app", "--host", "0.0.0.0", "--port", "8000"]
