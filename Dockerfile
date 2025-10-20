@@ -1,24 +1,23 @@
-# Use official Python image
+# Python 3.13 taban imajı
 FROM python:3.13-slim
 
-# Set working directory
+# Çalışma dizinini ayarla
 WORKDIR /app
 
-# Copy Python requirements first (for caching)
+# Önce yalnızca requirements.txt'yi kopyala, önbellek için
 COPY requirements.txt .
 
-# Install dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+# Önce Torch CPU'yu yükle
+RUN pip install --no-cache-dir torch==2.9.0+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
 
-# Copy backend, frontend, models, and other necessary files
-COPY backend ./backend
-COPY frontend ./frontend
-COPY README.md .
-COPY test-ball.mp4 .  # optional test file
+# Sonra geri kalan paketleri yükle
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port
+# Proje dosyalarını kopyala
+COPY . .
+
+# FastAPI varsayılan portunu aç
 EXPOSE 8000
 
-# Command to run FastAPI
+# FastAPI uygulamasını uvicorn ile çalıştır
 CMD ["uvicorn", "backend.api:app", "--host", "0.0.0.0", "--port", "8000"]
