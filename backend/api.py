@@ -7,7 +7,7 @@ from fastapi import HTTPException
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 app.include_router(image_routes.router)
 app.include_router(video_routes.router)
@@ -17,4 +17,4 @@ app.add_exception_handler(HTTPException, http_exception_handler)
 
 @app.get("/")
 async def root():
-    return FileResponse("static/index.html")
+    return FileResponse("frontend/index.html")
