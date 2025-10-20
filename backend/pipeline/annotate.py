@@ -1,3 +1,4 @@
+#Bu dosya, videolara tespit kutuları ve tahmin edilen noktalar eklemek için fonksiyonlar içerir.
 import cv2
 
 def annotate_video(video_path, detmap, predicted_points, output_video_path,

@@ -1,3 +1,5 @@
+#Bu dosya, FastAPI uygulamasını başlatır ve yönlendiricileri ekler.
+
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles

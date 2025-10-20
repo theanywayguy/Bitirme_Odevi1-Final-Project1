@@ -1,3 +1,5 @@
+# Bu dosya, LSTM modelini kullanarak koordinatların tahmin edilmesi için fonksiyonlar içerir.
+
 from backend.lstm import LSTMPredictor
 
 def run_lstm_prediction(coords_list, model_path, seq_length):

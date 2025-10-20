@@ -1,3 +1,5 @@
+# Bu dosya, LSTM modelini kullanarak koordinatların tahmin edilmesi için bir sınıf içerir.
+
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import numpy as np

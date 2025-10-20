@@ -1,3 +1,5 @@
+#Bu dosya, WebSocket kullanarak görev ilerlemesini gerçek zamanlı olarak iletmek için bir API uç noktası sağlar.
+
 from fastapi import APIRouter, WebSocket
 from backend.core.progress import get_progress, delete_progress
 import asyncio

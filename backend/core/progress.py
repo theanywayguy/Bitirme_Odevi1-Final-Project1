@@ -1,3 +1,6 @@
+# Bu dosya, görev ilerlemesini saklamak, güncellemek ve silmek için basit bir bellek içi depo sağlar.
+# Her video işleme veya benzeri uzun süren görev için ilerleme durumu takip edilir.
+
 progress_store = {}
 
 def update_progress(task_id, update):

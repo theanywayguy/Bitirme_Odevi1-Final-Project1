@@ -1,3 +1,5 @@
+# Bu dosya, videodan nesne tespiti yapmak için fonksiyonlar içerir.
+
 import cv2
 from backend.yolo import YoloDetector
 

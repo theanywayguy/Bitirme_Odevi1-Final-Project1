@@ -1,3 +1,4 @@
+# Bu dosya, video işleme boru hattının ana işlevini içerir.
 from .detect import detect_objects
 from .csv_export import export_csv
 from .predict import run_lstm_prediction
@@ -25,4 +26,4 @@ def process_video(video_path, yolo_weights, lstm_model_path,
 
     yield {"step": "Graph Generation", "progress": 80}
     metrics = generate_graphs_and_metrics(coords_list, predicted_points, seq_length, traj_path, xy_path)
-    yield {"step": "Graph Generation", "progress": 100, "metrics": metrics}
+    yield {"step": "Complete", "progress": 100, "metrics": metrics}

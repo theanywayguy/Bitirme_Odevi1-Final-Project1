@@ -1,5 +1,6 @@
+# Bu dosya, YOLO modelini kullanarak nesne tespiti yapmak için bir sınıf içerir.
+
 from ultralytics import YOLO
-import numpy as np
 
 class YoloDetector:
     def __init__(self, weights_path):

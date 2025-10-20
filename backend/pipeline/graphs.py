@@ -1,3 +1,5 @@
+# Bu dosya, gerçek ve tahmin edilen koordinatları kullanarak grafikler oluşturmak ve performans metriklerini hesaplamak için fonksiyonlar içerir.
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import mean_squared_error, mean_absolute_error

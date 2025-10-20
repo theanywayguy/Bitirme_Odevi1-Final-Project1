@@ -1,3 +1,5 @@
 /venv
 /backend/__pycache__/
 /backend/*.pyc
+*.pyc
+backend/outputs

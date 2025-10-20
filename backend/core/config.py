@@ -1,3 +1,5 @@
+# Bu dosya temel dizinleri ve model yollarını tanımlar, çıktı klasörünü oluşturur.
+# YOLO ve LSTM modellerinin dosya yollarını merkezi olarak saklamak için kullanılır.
 import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))

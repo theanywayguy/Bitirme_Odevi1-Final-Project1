@@ -1,3 +1,6 @@
+# Bu dosya, FastAPI için özel bir HTTP hata işleyicisi tanımlar.
+# HTTPException oluştuğunda JSON formatında hata mesajı döndürür.
+
 from fastapi.responses import JSONResponse
 from fastapi import HTTPException
 

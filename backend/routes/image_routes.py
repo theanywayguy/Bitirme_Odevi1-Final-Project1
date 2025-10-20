@@ -1,3 +1,5 @@
+#Bu dosya, FastAPI kullanarak yüklenen görüntülerde nesne tespiti yapmak için bir API uç noktası sağlar.
+
 from fastapi import APIRouter, UploadFile, File, HTTPException
 import uuid, os, cv2, numpy as np
 from backend.yolo import YoloDetector

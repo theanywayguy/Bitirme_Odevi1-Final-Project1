@@ -1,6 +1,9 @@
+#Bu dosya, FastAPI kullanarak yüklenen videoları işlemek için bir API uç noktası sağlar.
+
+import anyio
 from fastapi import APIRouter, UploadFile, File, BackgroundTasks, HTTPException
 from fastapi.responses import FileResponse
-from backend.pipeline.video_utils import process_video
+from backend.pipeline.init import process_video
 from backend.core.config import YOLO_WEIGHTS, LSTM_MODEL, OUTPUT_DIR
 from backend.core.progress import update_progress
 import os, uuid, cv2
@@ -8,21 +11,27 @@ import os, uuid, cv2
 router = APIRouter()
 
 async def process_video_task(task_id, temp_path, video_name, csv_name, traj_name, xy_name):
-    try:
-        for update in process_video(temp_path, YOLO_WEIGHTS, LSTM_MODEL,
-                                    os.path.join(OUTPUT_DIR, video_name),
-                                    os.path.join(OUTPUT_DIR, csv_name),
-                                    os.path.join(OUTPUT_DIR, traj_name),
-                                    os.path.join(OUTPUT_DIR, xy_name)):
+    def sync_runner():
+        for update in process_video(
+            temp_path,
+            YOLO_WEIGHTS,
+            LSTM_MODEL,
+            os.path.join(OUTPUT_DIR, video_name),
+            os.path.join(OUTPUT_DIR, csv_name),
+            os.path.join(OUTPUT_DIR, traj_name),
+            os.path.join(OUTPUT_DIR, xy_name)
+        ):
             update_progress(task_id, update)
-    finally:
-        if os.path.exists(temp_path):
-            os.remove(temp_path)
+
+    await anyio.to_thread.run_sync(sync_runner)
+
+    if os.path.exists(temp_path):
+        os.remove(temp_path)
 
 @router.post("/upload_video")
 async def upload_video(file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks()):
     ext = file.filename.split('.')[-1].lower()
-    if ext not in ["mp4", "avi"]:
+    if ext not in ["mp4"]:
         raise HTTPException(status_code=400, detail="Unsupported video type")
 
     temp_name = f"{uuid.uuid4()}.{ext}"

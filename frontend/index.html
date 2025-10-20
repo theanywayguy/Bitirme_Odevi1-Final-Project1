@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video ve Görsel İşleme Paneli</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      background: white;
+      border-radius: 8px;
+      border-left: 4px solid #e5e7eb;
+      transition: all 0.3s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .step-item.active {
+      border-left-color: #1e40af;
+      background: #f9fafb;
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
+    }
+    
+    .step-item.completed {
+      border-left-color: #047857;
+      background: #f0fdf4;
+    }
+    
+    .step-item.error {
+      border-left-color: #b91c1c;
+      background: #fef2f2;
+    }
+    
+    .step-icon {
+      min-width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #e5e7eb;
+    }
+    
+    .step-item.active .step-icon {
+      background: #1e40af;
+    }
+    
+    .step-item.completed .step-icon {
+      background: #047857;
+    }
+    
+    .step-item.error .step-icon {
+      background: #b91c1c;
+    }
+    
+    .step-text {
+      font-weight: 500;
+      color: #1f2937;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    
+    .step-item.completed .step-text {
+      color: #065f46;
+    }
+    
+    .step-item.error .step-text {
+      color: #991b1b;
+    }
+    
+    .progress-container {
+      position: relative;
+      background: #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 8px;
+      margin: 16px 0;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background: #1e40af;
+      transition: width 0.4s ease;
+      border-radius: 8px;
+    }
+    
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .metric-card {
+      text-align: center;
+      padding: 1rem;
+      border-radius: 8px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+    
+    .metric-card h3 {
+      font-size: 0.9rem;
+      color: #374151;
+      margin-bottom: 0.5rem;
+    }
+    
+    .metric-card p {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1f2937;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col items-center justify-center p-6">
+  <div class="max-w-3xl w-full bg-white shadow-2xl rounded-2xl p-8 space-y-8">
+    <h1 class="text-3xl font-bold text-center text-gray-800">Video ve Görsel İşleme Paneli</h1>
+    <p class="text-center text-gray-600">Gelişmiş video ve görsel analizi</p>
+
+    <!-- Görsel Yükleme -->
+    <section class="space-y-6 p-6 bg-gray-50 rounded-2xl">
+      <h2 class="text-xl font-semibold text-gray-700">Görsel Yükleme</h2>
+      <p class="text-gray-600">Desteklenen formatlar: .png, .jpg, .jpeg</p>
+      
+      <div class="space-y-3">
+        <input id="imageInput" type="file" accept=".png,.jpg,.jpeg"
+               class="block w-full text-sm text-gray-600 file:mr-4 file:py-3 file:px-6
+               file:rounded-md file:border-0 file:text-sm file:font-semibold
+               file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition-all duration-200">
+        
+        <button id="uploadImageBtn"
+                class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-all duration-200 font-semibold">
+                Görseli İşle
+        </button>
+      </div>
+      
+      <div class="progress-container">
+        <div id="imageProgress" class="progress-bar w-0"></div>
+      </div>
+      
+      <div id="imageResult" class="mt-6 hidden space-y-4 text-center">
+        <div class="bg-white p-4 rounded-md shadow-md">
+          <img id="processedImage" class="mx-auto max-w-full rounded-md border border-gray-200" alt="İşlenmiş Görsel">
+        </div>
+        <a id="downloadImage" class="inline-block bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors font-semibold">
+          Görseli İndir
+        </a>
+      </div>
+    </section>
+
+    <hr class="border-gray-200">
+
+    <!-- Video Yükleme -->
+    <section class="space-y-6 p-6 bg-gray-50 rounded-2xl">
+      <h2 class="text-xl font-semibold text-gray-700">Video Yükleme</h2>
+      <p class="text-gray-600">Desteklenen format: .mp4 (1 dakikadan kısa)</p>
+      
+      <div class="space-y-3">
+        <input id="videoInput" type="file" accept=".mp4"
+               class="block w-full text-sm text-gray-600 file:mr-4 file:py-3 file:px-6
+               file:rounded-md file:border-0 file:text-sm file:font-semibold
+               file:bg-blue-600 file:text-white hover:file:bg-blue-700 transition-all duration-200">
+        
+        <button id="uploadVideoBtn"
+                class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition-all duration-200 font-semibold">
+                Videoyu İşle
+        </button>
+      </div>
+      
+      <div class="progress-container">
+        <div id="videoProgress" class="progress-bar w-0"></div>
+      </div>
+      
+      <div id="videoSteps" class="space-y-2 max-h-48 overflow-y-auto"></div>
+      
+      <div id="videoResult" class="mt-6 hidden space-y-6 text-center">
+        <div class="bg-white p-4 rounded-md shadow-md">
+          <video id="processedVideo" controls class="mx-auto max-w-full rounded-md border border-gray-200"></video>
+        </div>
+        
+        <div id="metricsResult" class="metrics-grid hidden"></div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white p-4 rounded-md shadow-md">
+            <img id="trajGraph" class="mx-auto max-w-full rounded-md border border-gray-200" alt="Yörünge Grafiği">
+          </div>
+          <div class="bg-white p-4 rounded-md shadow-md">
+            <img id="xyGraph" class="mx-auto max-w-full rounded-md border border-gray-200" alt="XY Grafiği">
+          </div>
+        </div>
+        
+        <div class="bg-white p-4 rounded-md shadow-md overflow-x-auto">
+          <div id="csvResult" class="text-sm text-left"></div>
+        </div>
+        
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a id="downloadVideo" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors font-semibold">
+            Videoyu İndir
+          </a>
+          <a id="downloadCSV" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors font-semibold">
+            CSV İndir
+          </a>
+          <a id="downloadTraj" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors font-semibold">
+            Yörünge Grafiğini İndir
+          </a>
+          <a id="downloadXY" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors font-semibold">
+            XY Grafiğini İndir
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="/frontend/app.js"></script>
+</body>
+</html>
