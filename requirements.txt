@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+pandas
+numpy
+opencv-python
+matplotlib
+scikit-learn
+ultralytics
+python-multipart
+tensorflow-cpu
+torch
+torchvision
+torchaudio
