@@ -1,4 +1,3 @@
-#Bu dosya, videolara tespit kutuları ve tahmin edilen noktalar eklemek için fonksiyonlar içerir.
 import cv2
 
 def annotate_video(video_path, detmap, predicted_points, output_video_path,
@@ -11,18 +10,35 @@ def annotate_video(video_path, detmap, predicted_points, output_video_path,
         ret, frame = cap.read()
         if not ret:
             break
+
         if idx in detmap:
             d = detmap[idx]
             cv2.rectangle(frame, (d["x1"], d["y1"]), (d["x2"], d["y2"]), (0, 255, 0), 2)
             cv2.putText(frame, f"Top ({d['x_norm']:.2f},{d['y_norm']:.2f}) G:{d['conf']:.2f}",
                         (d["x1"], d["y1"] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
         pred_i = idx - seq_length
         if 0 <= pred_i < len(predicted_points):
             x_p, y_f = predicted_points[pred_i]
             x_pix = int(x_p * frame_dims[0])
             y_pix = int((1 - y_f) * frame_dims[1])
             cv2.circle(frame, (x_pix, y_pix), 8, (0, 165, 255), -1)
+
+            
+            if pred_i > 0:
+                prev_x = predicted_points[pred_i - 1][0]
+                direction = "LEFT" if x_p < prev_x else "RIGHT"
+            else:
+                direction = "UNKNOWN"
+
+            
+            cv2.putText(frame,
+                        f"TAHMIN: {direction} ({x_p:.2f},{y_f:.2f})",
+                        (x_pix + 10, y_pix - 10),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 165, 255), 2)
+
         out.write(frame)
         idx += 1
+
     cap.release()
     out.release()
